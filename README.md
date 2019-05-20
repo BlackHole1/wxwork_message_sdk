@@ -60,6 +60,65 @@ func main() {
 }
 ```
 
+## API
+
+### Create
+
+创建一个消息实例，其用法为：
+
+```go
+wxwork_message_sdk.Create(token string, corpId string, encodingAesKey string)(path string, port string, delimiters []string)
+```
+
+`token`、`corpId`、`encodingAesKey`为企业微信提供：
+
+* token 在建立第三方应用时，企业微信提供
+* corpId 为企业号，详情可见：https://work.weixin.qq.com/api/doc#90000/90135/90665
+* encodingAesKey 在建立第三方应用时，企业微信提供
+
+以上是第一层的参数，`Create`会返回一个函数，这个函数也有三个参数：
+
+* path 当前接受消息的url路径
+* port 要接受消息的端口，非数值型，而是字符串，例如：`":8080"`
+* delimiters 分隔符，用于把每句话安装分隔符进行分割，可有多个
+
+### Registry
+
+注册一些语句，根据不用的语句，来调用相关函数。：
+
+单层级，且没有`content`
+
+```go
+func aoc(content: string) (string, error) {
+    // 判断是否为 aoc help
+    if (content == "help") {
+        return "I'm Help"
+    }
+    return "没有找到匹配条件，可输入aoc help查看帮助"
+}
+
+// 注册aoc消息
+company.Registry(AocHelp, "aoc")
+```
+
+多层级捕获
+
+```go
+// 此函数，将捕获：
+// aoc 日志 login //=> content就为login
+func aocLog(content: string) (string, error) {
+    // 查询aoc下的login日志
+    return "输出结果"
+}
+
+// 注册 aoc 日志 消息
+company.Registry(aocLog, "aoc", "日志")
+```
+
+### Run
+
+当消息注册完毕后，就可以通过此函数，进行启动
+
 ## Screenshots
 
 ![Imgur](https://i.imgur.com/ui8IUsG.png)
