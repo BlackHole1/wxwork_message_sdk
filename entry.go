@@ -86,8 +86,11 @@ func receiveController(wx *Wx) httprouter.Handle {
 
 		result := "没有匹配到相应结果"
 
-		// 先根据消息发送者过滤消息
-		if nil != wx.RegistryUserHandle[msgContent.FromUsername] {
+		if "FROMUSERNAME" == msgContent.Content {
+			// 返回用户自己的企业微信 FromUsername
+			result = msgContent.FromUsername
+		} else if nil != wx.RegistryUserHandle[msgContent.FromUsername] {
+			// 根据消息发送者过滤消息
 			result, err = wx.RegistryUserHandle[msgContent.FromUsername](msgContent.Content)
 
 			if nil != err {
